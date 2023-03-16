@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml-fragment xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:env="http://www.bea.com/wli/config/env" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con="http://www.bea.com/wli/sb/typesystem/config" xmlns:con1="http://www.bea.com/wli/sb/pipeline/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con3="http://www.bea.com/wli/sb/stages/config">
+  <ser:coreEntry isProxy="true" isEnabled="true">
+    <ser:binding type="Mixed" xsi:type="con:MixedBindingType" xmlns:con="http://www.bea.com/wli/sb/services/bindings/config">
+      <con:request type="XML">
+        <con4:schema ref="EjbExercise/Source/XSDs/InputKirim" element="InputKirim" xmlns:con4="http://www.bea.com/wli/sb/typesystem/config"/>
+      </con:request>
+    </ser:binding>
+    <ser:monitoring isEnabled="false">
+      <ser:aggregationInterval>10</ser:aggregationInterval>
+      <ser:pipelineMonitoringLevel>Pipeline</ser:pipelineMonitoringLevel>
+    </ser:monitoring>
+    <ser:reporting>true</ser:reporting>
+    <ser:logging isEnabled="true">
+      <ser:logLevel>debug</ser:logLevel>
+    </ser:logging>
+    <ser:sla-alerting isEnabled="true">
+      <ser:alertLevel>normal</ser:alertLevel>
+    </ser:sla-alerting>
+    <ser:pipeline-alerting isEnabled="true">
+      <ser:alertLevel>normal</ser:alertLevel>
+    </ser:pipeline-alerting>
+  </ser:coreEntry>
+  <ser:endpointConfig>
+    <tran:provider-id>http</tran:provider-id>
+    <tran:inbound>true</tran:inbound>
+    <tran:URI>
+      <env:value>/EjbExercise/ProxyService/KirimUang-class</env:value>
+    </tran:URI>
+    <tran:inbound-properties/>
+    <tran:all-headers>false</tran:all-headers>
+    <tran:provider-specific>
+      <http:inbound-properties/>
+    </tran:provider-specific>
+  </ser:endpointConfig>
+  <ser:router>
+    <con1:pipeline type="request" name="PipelinePairNode1_request">
+      <con1:stage name="stage1">
+        <con1:context/>
+        <con1:actions>
+          <con2:javaCallout varName="">
+            <con3:id>_ActionId-6435303334077033509-69788c5c.186e404c64f.-7e79</con3:id>
+            <con2:archive ref="EjbExercise/Source/jar/SimpleLogging"/>
+            <con2:className>id.co.quadras.training.WriteToConsole</con2:className>
+            <con2:method>public static void println(java.lang.String, java.lang.String)</con2:method>
+            <con2:expr>
+              <con3:xqueryText>'DEBUG'</con3:xqueryText>
+            </con2:expr>
+            <con2:expr>
+              <con3:xqueryText>concat('Input Body : ',fn:normalize-space(fn-bea:serialize($body)))</con3:xqueryText>
+            </con2:expr>
+          </con2:javaCallout>
+          <con2:assign varName="accountFrom">
+            <con3:id>_ActionId-6435303334077033509-69788c5c.186e404c64f.-7e41</con3:id>
+            <con2:expr>
+              <con3:xqueryText>xs:long($body/InputKirim/AccountFrom/text())</con3:xqueryText>
+            </con2:expr>
+          </con2:assign>
+          <con2:assign varName="accountTo">
+            <con3:id>_ActionId-6435303334077033509-69788c5c.186e404c64f.-7e1d</con3:id>
+            <con2:expr>
+              <con3:xqueryText>xs:long($body/InputKirim/AccountTo/text())</con3:xqueryText>
+            </con2:expr>
+          </con2:assign>
+          <con2:assign varName="amount">
+            <con3:id>_ActionId-6435303334077033509-69788c5c.186e404c64f.-7df4</con3:id>
+            <con2:expr>
+              <con3:xqueryText>xs:long($body/InputKirim/Amount/text())</con3:xqueryText>
+            </con2:expr>
+          </con2:assign>
+          <con2:assign varName="notes">
+            <con3:id>_ActionId-6435303334077033509-69788c5c.186e404c64f.-7dd5</con3:id>
+            <con2:expr>
+              <con3:xqueryText>xs:string($body/InputKirim/Notes/text())</con3:xqueryText>
+            </con2:expr>
+          </con2:assign>
+          <con2:assign varName="branchCode">
+            <con3:id>_ActionId-6435303334077033509-69788c5c.186e404c64f.-7dc3</con3:id>
+            <con2:expr>
+              <con3:xqueryText>xs:long($body/InputKirim/BranchCode/text())</con3:xqueryText>
+            </con2:expr>
+          </con2:assign>
+        </con1:actions>
+      </con1:stage>
+      <con1:stage name="stage2">
+        <con1:context/>
+        <con1:actions>
+          <con2:assign varName="validate">
+            <con3:id>_ActionId-6435303334077033509-69788c5c.186e404c64f.-7cfe</con3:id>
+            <con2:expr>
+              <con3:xqueryText>if(fn:string-length(fn-bea:trim($accountFrom))=0) then
+	 'accountFrom'
+else if(fn:string-length(fn-bea:trim($accountTo))=0) then
+	 'accountTo'
+else if(fn:string-length(fn-bea:trim($amount))=0) then
+	 'amount'
+else if(fn:string-length(fn-bea:trim($notes))=0) then
+	 'notes'
+else if(fn:string-length(fn-bea:trim($branchCode))=0) then
+	 'branchCode'
+else
+	''</con3:xqueryText>
+            </con2:expr>
+          </con2:assign>
+          <con2:javaCallout varName="">
+            <con3:id>_ActionId-6435303334077033509-69788c5c.186e404c64f.-7cfb</con3:id>
+            <con2:archive ref="EjbExercise/Source/jar/SimpleLogging"/>
+            <con2:className>id.co.quadras.training.WriteToConsole</con2:className>
+            <con2:method>public static void println(java.lang.String, java.lang.String)</con2:method>
+            <con2:expr>
+              <con3:xqueryText>'VALIDATE'</con3:xqueryText>
+            </con2:expr>
+            <con2:expr>
+              <con3:xqueryText>concat('Input Body : ',fn:normalize-space(fn-bea:serialize($validate)))</con3:xqueryText>
+            </con2:expr>
+          </con2:javaCallout>
+          <con2:ifThenElse>
+            <con3:id>_ActionId-6435303334077033509-69788c5c.186e404c64f.-7ce1</con3:id>
+            <con2:case>
+              <con2:condition>
+                <con3:xqueryText>fn:string($validate) = 'accountFrom'</con3:xqueryText>
+              </con2:condition>
+              <con2:actions>
+                <con2:Error>
+                  <con3:id>_ActionId-6435303334077033509-69788c5c.186e404c64f.-7c71</con3:id>
+                  <con2:errCode>OGYA-999</con2:errCode>
+                  <con2:message>field accountFrom harus diisi</con2:message>
+                </con2:Error>
+              </con2:actions>
+            </con2:case>
+            <con2:case>
+              <con2:condition>
+                <con3:xqueryText>fn:string($validate) = 'accountTo'</con3:xqueryText>
+              </con2:condition>
+              <con2:actions>
+                <con2:Error>
+                  <con3:id>_ActionId-6435303334077033509-69788c5c.186e404c64f.-7b93</con3:id>
+                  <con2:errCode>OGYA-999</con2:errCode>
+                  <con2:message>field accountTo harus diisi</con2:message>
+                </con2:Error>
+              </con2:actions>
+            </con2:case>
+            <con2:case>
+              <con2:condition>
+                <con3:xqueryText>fn:string($validate) = 'amount'</con3:xqueryText>
+              </con2:condition>
+              <con2:actions>
+                <con2:Error>
+                  <con3:id>_ActionId-6435303334077033509-69788c5c.186e404c64f.-7b8f</con3:id>
+                  <con2:errCode>OGYA-999</con2:errCode>
+                  <con2:message>field amount harus diisi</con2:message>
+                </con2:Error>
+              </con2:actions>
+            </con2:case>
+            <con2:case>
+              <con2:condition>
+                <con3:xqueryText>fn:string($validate) = 'notes'</con3:xqueryText>
+              </con2:condition>
+              <con2:actions>
+                <con2:Error>
+                  <con3:id>_ActionId-6435303334077033509-69788c5c.186e404c64f.-7b11</con3:id>
+                  <con2:errCode>OGYA-999</con2:errCode>
+                  <con2:message>field notes harus diisi</con2:message>
+                </con2:Error>
+              </con2:actions>
+            </con2:case>
+            <con2:case>
+              <con2:condition>
+                <con3:xqueryText>fn:string($validate) = 'branchCode'</con3:xqueryText>
+              </con2:condition>
+              <con2:actions>
+                <con2:Error>
+                  <con3:id>_ActionId-6435303334077033509-69788c5c.186e404c64f.-7af6</con3:id>
+                  <con2:errCode>OGYA-999</con2:errCode>
+                  <con2:message>field branchCode harus diisi</con2:message>
+                </con2:Error>
+              </con2:actions>
+            </con2:case>
+            <con2:default/>
+          </con2:ifThenElse>
+        </con1:actions>
+      </con1:stage>
+    </con1:pipeline>
+    <con1:pipeline type="response" name="PipelinePairNode1_response">
+      <con1:stage name="stage1">
+        <con1:context/>
+        <con1:actions>
+          <con2:javaCallout varName="">
+            <con3:id>_ActionId-6435303334077033509-69788c5c.186e404c64f.-7af3</con3:id>
+            <con2:archive ref="EjbExercise/Source/jar/SimpleLogging"/>
+            <con2:className>id.co.quadras.training.WriteToConsole</con2:className>
+            <con2:method>public static void println(java.lang.String, java.lang.String)</con2:method>
+            <con2:expr>
+              <con3:xqueryText>'DEBUG'</con3:xqueryText>
+            </con2:expr>
+            <con2:expr>
+              <con3:xqueryText>concat('referenceNumber : ',fn:normalize-space(fn-bea:serialize($referenceNumber)))</con3:xqueryText>
+            </con2:expr>
+          </con2:javaCallout>
+          <con2:assign varName="newBody">
+            <con3:id>_ActionId-6435303334077033509-69788c5c.186e404c64f.-7adf</con3:id>
+            <con2:expr>
+              <con3:xqueryText><![CDATA[<m:kirimResponse 	xmlns:m="http://www.openuri.org/" xmlns:env="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<m:response>
+<java:ErrorCode 	xsi:nil="true" xmlns:java="java:id.co.ogya.ebanking.ejb.response"/>
+<java:ErrorMessage 	xmlns:java="java:id.co.ogya.ebanking.ejb.response">{$errorMessage}</java:ErrorMessage>
+<java:ReferenceNumber 	xmlns:java="java:id.co.ogya.ebanking.ejb.response">{$referenceNumber}</java:ReferenceNumber>
+</m:response>
+</m:kirimResponse>]]></con3:xqueryText>
+            </con2:expr>
+          </con2:assign>
+          <con2:replace varName="body" contents-only="true">
+            <con3:id>_ActionId-6435303334077033509-69788c5c.186e404c64f.-7ad2</con3:id>
+            <con2:location>
+              <con3:xpathText>.</con3:xpathText>
+            </con2:location>
+            <con2:expr>
+              <con3:xqueryText>$newBody</con3:xqueryText>
+            </con2:expr>
+          </con2:replace>
+          <con3:reply>
+            <con3:id>_ActionId-6435303334077033509-69788c5c.186e404c64f.-7ac6</con3:id>
+          </con3:reply>
+        </con1:actions>
+      </con1:stage>
+    </con1:pipeline>
+    <con1:pipeline type="request" name="PipelinePairNode2_request">
+      <con1:stage name="stage1">
+        <con1:context>
+          <con3:userNsDecl namespace="http://www.openuri.org/" prefix="m"/>
+          <con3:userNsDecl namespace="java:id.co.ogya.ebanking.ejb.response" prefix="java"/>
+        </con1:context>
+        <con1:actions>
+          <con2:wsCallout>
+            <con3:id>_ActionId-6435303334077033509-69788c5c.186e404c64f.-7e9d</con3:id>
+            <con2:service xsi:type="ref:BusinessServiceRef" ref="EjbExercise/BusinessService/ebanking-class-ejb" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+            <con2:operation>kirim</con2:operation>
+            <con2:request>
+              <con2:body>$inputKirim</con2:body>
+            </con2:request>
+            <con2:response>
+              <con2:body>outputKirim</con2:body>
+            </con2:response>
+            <con2:requestTransform>
+              <con2:assign varName="inputKirim">
+                <con3:id>_ActionId-6435303334077033509-69788c5c.186e404c64f.-7e7c</con3:id>
+                <con2:expr>
+                  <con3:xqueryText><![CDATA[<open:kirim xmlns:open="http://www.openuri.org/">
+    <open:request xmlns:java="java:id.co.ogya.ebanking.ejb.request">
+        <java:BranchCode>{$branchCode}</java:BranchCode>
+        <java:AccountFrom>{$accountFrom}</java:AccountFrom>
+        <java:AccountTo>{$accountTo}</java:AccountTo>
+        <java:Amount>{$amount}</java:Amount>
+        <java:Notes>{$notes}</java:Notes>
+    </open:request>
+</open:kirim>]]></con3:xqueryText>
+                </con2:expr>
+              </con2:assign>
+              <con2:javaCallout varName="">
+                <con3:id>_ActionId-6435303334077033509-69788c5c.186e404c64f.-7dc0</con3:id>
+                <con2:archive ref="EjbExercise/Source/jar/SimpleLogging"/>
+                <con2:className>id.co.quadras.training.WriteToConsole</con2:className>
+                <con2:method>public static void println(java.lang.String, java.lang.String)</con2:method>
+                <con2:expr>
+                  <con3:xqueryText>'DEBUG'</con3:xqueryText>
+                </con2:expr>
+                <con2:expr>
+                  <con3:xqueryText>concat('data masuk : ',fn:normalize-space(fn-bea:serialize($inputKirim)))</con3:xqueryText>
+                </con2:expr>
+              </con2:javaCallout>
+            </con2:requestTransform>
+            <con2:responseTransform>
+              <con2:javaCallout varName="">
+                <con3:id>_ActionId-6435303334077033509-69788c5c.186e404c64f.-7dbd</con3:id>
+                <con2:archive ref="EjbExercise/Source/jar/SimpleLogging"/>
+                <con2:className>id.co.quadras.training.WriteToConsole</con2:className>
+                <con2:method>public static void println(java.lang.String, java.lang.String)</con2:method>
+                <con2:expr>
+                  <con3:xqueryText>'DEBUG'</con3:xqueryText>
+                </con2:expr>
+                <con2:expr>
+                  <con3:xqueryText>concat('Isinya : ',fn:normalize-space(fn-bea:serialize($outputKirim)))</con3:xqueryText>
+                </con2:expr>
+              </con2:javaCallout>
+              <con2:assign varName="errorMessage">
+                <con3:id>_ActionId-6435303334077033509-69788c5c.186e404c64f.-7adc</con3:id>
+                <con2:expr>
+                  <con3:xqueryText>$outputKirim//m:response/java:ErrorMessage/text()</con3:xqueryText>
+                </con2:expr>
+              </con2:assign>
+              <con2:assign varName="referenceNumber">
+                <con3:id>_ActionId-6435303334077033509-69788c5c.186e404c64f.-7aa1</con3:id>
+                <con2:expr>
+                  <con3:xqueryText>$outputKirim//m:response/java:ReferenceNumber/text()</con3:xqueryText>
+                </con2:expr>
+              </con2:assign>
+            </con2:responseTransform>
+          </con2:wsCallout>
+        </con1:actions>
+      </con1:stage>
+    </con1:pipeline>
+    <con1:pipeline type="response" name="PipelinePairNode2_response"/>
+    <con1:flow>
+      <con1:pipeline-node name="PipelinePairNode1">
+        <con1:request>PipelinePairNode1_request</con1:request>
+        <con1:response>PipelinePairNode1_response</con1:response>
+      </con1:pipeline-node>
+      <con1:pipeline-node name="PipelinePairNode2">
+        <con1:request>PipelinePairNode2_request</con1:request>
+        <con1:response>PipelinePairNode2_response</con1:response>
+      </con1:pipeline-node>
+    </con1:flow>
+  </ser:router>
+</xml-fragment>
