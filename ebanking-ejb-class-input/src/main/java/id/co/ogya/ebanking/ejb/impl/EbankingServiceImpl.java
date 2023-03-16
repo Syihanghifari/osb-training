@@ -139,7 +139,7 @@ public class EbankingServiceImpl implements EbankingService {
 			preparedStatement.setLong(3, transferRequest.getAccountTo());
 			preparedStatement.setLong(4, transferRequest.getAmount());
 			preparedStatement.setString(5, transferRequest.getNotes());
-			preparedStatement.executeQuery();
+			preparedStatement.executeUpdate();
 			preparedStatement.close();
 			dataSourceServiceFactory.closeConnection();
 		} catch (Exception e) {
@@ -195,7 +195,7 @@ public class EbankingServiceImpl implements EbankingService {
 			PreparedStatement preparedStatement = conn.prepareStatement(sqlSelectQuery);
 			preparedStatement.setLong(1, jumlah);
 			preparedStatement.setLong(2, no);
-			preparedStatement.executeQuery();
+			preparedStatement.executeUpdate();
 			preparedStatement.close();
 			dataSourceServiceFactory.closeConnection();
 		} catch (Exception e) {
@@ -211,7 +211,7 @@ public class EbankingServiceImpl implements EbankingService {
 			PreparedStatement preparedStatement = conn.prepareStatement(sqlSelectQuery);
 			preparedStatement.setLong(1, jumlah);
 			preparedStatement.setLong(2, no);
-			preparedStatement.executeQuery();
+			preparedStatement.executeUpdate();
 			preparedStatement.close();
 			dataSourceServiceFactory.closeConnection();
 		} catch (Exception e) {
