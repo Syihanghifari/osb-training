@@ -1,0 +1,6 @@
+id\co\ogya\ebanking\ejb\impl\EbankingServiceImpl.class
+id\co\ogya\ebanking\ejb\response\InquiryBalanceResponse.class
+id\co\ogya\ebanking\ejb\response\TransferResponse.class
+id\co\ogya\ebanking\ejb\util\DataSourceServiceFactory.class
+id\co\ogya\ebanking\ejb\util\ServiceFactory.class
+id\co\ogya\ebanking\ejb\EbankingService.class

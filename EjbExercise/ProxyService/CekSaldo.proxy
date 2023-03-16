@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml-fragment xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:env="http://www.bea.com/wli/config/env" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con="http://www.bea.com/wli/sb/typesystem/config" xmlns:con1="http://www.bea.com/wli/sb/pipeline/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con3="http://www.bea.com/wli/sb/stages/config">
+  <ser:coreEntry isProxy="true" isEnabled="true">
+    <ser:binding type="Mixed" xsi:type="con:MixedBindingType" xmlns:con="http://www.bea.com/wli/sb/services/bindings/config">
+      <con:request type="XML">
+        <con1:schema ref="EjbExercise/Source/XSDs/InputNo" element="InputNo" xmlns:con1="http://www.bea.com/wli/sb/typesystem/config"/>
+      </con:request>
+    </ser:binding>
+    <ser:monitoring isEnabled="false">
+      <ser:aggregationInterval>10</ser:aggregationInterval>
+      <ser:pipelineMonitoringLevel>Pipeline</ser:pipelineMonitoringLevel>
+    </ser:monitoring>
+    <ser:reporting>true</ser:reporting>
+    <ser:logging isEnabled="true">
+      <ser:logLevel>debug</ser:logLevel>
+    </ser:logging>
+    <ser:sla-alerting isEnabled="true">
+      <ser:alertLevel>normal</ser:alertLevel>
+    </ser:sla-alerting>
+    <ser:pipeline-alerting isEnabled="true">
+      <ser:alertLevel>normal</ser:alertLevel>
+    </ser:pipeline-alerting>
+  </ser:coreEntry>
+  <ser:endpointConfig>
+    <tran:provider-id>http</tran:provider-id>
+    <tran:inbound>true</tran:inbound>
+    <tran:URI>
+      <env:value>/EjbExercise/ProxyService/Ebanking</env:value>
+    </tran:URI>
+    <tran:inbound-properties/>
+    <tran:all-headers>false</tran:all-headers>
+    <tran:provider-specific>
+      <http:inbound-properties/>
+    </tran:provider-specific>
+  </ser:endpointConfig>
+  <ser:router>
+    <con1:pipeline type="request" name="PipelinePairNode1_request">
+      <con1:stage name="stage1">
+        <con1:context/>
+        <con1:actions>
+          <con2:javaCallout varName="">
+            <con3:id>_ActionId-6435303334077033509-69788c5c.186e404c64f.-7faa</con3:id>
+            <con2:archive ref="EjbExercise/Source/jar/SimpleLogging"/>
+            <con2:className>id.co.quadras.training.WriteToConsole</con2:className>
+            <con2:method>public static void println(java.lang.String, java.lang.String)</con2:method>
+            <con2:expr>
+              <con3:xqueryText>'DEBUG'</con3:xqueryText>
+            </con2:expr>
+            <con2:expr>
+              <con3:xqueryText>concat('Input Body : ',fn:normalize-space(fn-bea:serialize($body)))</con3:xqueryText>
+            </con2:expr>
+          </con2:javaCallout>
+          <con2:assign varName="no">
+            <con3:id>_ActionId-6435303334077033509-69788c5c.186e404c64f.-7f85</con3:id>
+            <con2:expr>
+              <con3:xqueryText>$body/InputNo/No/text()</con3:xqueryText>
+            </con2:expr>
+          </con2:assign>
+        </con1:actions>
+      </con1:stage>
+      <con1:stage name="stage2">
+        <con1:context/>
+        <con1:actions>
+          <con2:assign varName="validate">
+            <con3:id>_ActionId-6435303334077033509-69788c5c.186e404c64f.-7d79</con3:id>
+            <con2:expr>
+              <con3:xqueryText>if(fn:string-length(fn-bea:trim($no))=0) then
+	 'no'
+else
+	''</con3:xqueryText>
+            </con2:expr>
+          </con2:assign>
+          <con2:javaCallout varName="">
+            <con3:id>_ActionId-6435303334077033509-69788c5c.186e404c64f.-7d76</con3:id>
+            <con2:archive ref="EjbExercise/Source/jar/SimpleLogging"/>
+            <con2:className>id.co.quadras.training.WriteToConsole</con2:className>
+            <con2:method>public static void println(java.lang.String, java.lang.String)</con2:method>
+            <con2:expr>
+              <con3:xqueryText>'validasi'</con3:xqueryText>
+            </con2:expr>
+            <con2:expr>
+              <con3:xqueryText>concat('validate : ',fn:normalize-space(fn-bea:serialize($validate)))</con3:xqueryText>
+            </con2:expr>
+          </con2:javaCallout>
+          <con2:ifThenElse>
+            <con3:id>_ActionId-6435303334077033509-69788c5c.186e404c64f.-7d4d</con3:id>
+            <con2:case>
+              <con2:condition>
+                <con3:xqueryText>fn:string-length($validate)>0</con3:xqueryText>
+              </con2:condition>
+              <con2:actions>
+                <con2:Error>
+                  <con3:id>_ActionId-6435303334077033509-69788c5c.186e404c64f.-7d17</con3:id>
+                  <con2:errCode>OGYA-999</con2:errCode>
+                  <con2:message>field &lt;no> harus diisi</con2:message>
+                </con2:Error>
+              </con2:actions>
+            </con2:case>
+            <con2:default/>
+          </con2:ifThenElse>
+        </con1:actions>
+      </con1:stage>
+    </con1:pipeline>
+    <con1:pipeline type="response" name="PipelinePairNode1_response">
+      <con1:stage name="stage1">
+        <con1:context/>
+        <con1:actions>
+          <con2:javaCallout varName="">
+            <con3:id>_ActionId-6435303334077033509-69788c5c.186e404c64f.-7f17</con3:id>
+            <con2:archive ref="EjbExercise/Source/jar/SimpleLogging"/>
+            <con2:className>id.co.quadras.training.WriteToConsole</con2:className>
+            <con2:method>public static void println(java.lang.String, java.lang.String)</con2:method>
+            <con2:expr>
+              <con3:xqueryText>'DEBUG'</con3:xqueryText>
+            </con2:expr>
+            <con2:expr>
+              <con3:xqueryText>concat('saldo : ',fn:normalize-space(fn-bea:serialize($saldo)))</con3:xqueryText>
+            </con2:expr>
+          </con2:javaCallout>
+          <con2:assign varName="newBody">
+            <con3:id>_ActionId-6435303334077033509-69788c5c.186e404c64f.-7ef1</con3:id>
+            <con2:expr>
+              <con3:xqueryText><![CDATA[<m:cekSaldoResponse 	xmlns:m="http://www.openuri.org/">
+<m:response>
+<java:ErrorCode 	xsi:nil="true" xmlns:java="java:id.co.ogya.ebanking.ejb.response"/>
+<java:ErrorMessage 	xsi:nil="true" xmlns:java="java:id.co.ogya.ebanking.ejb.response"/>
+<java:AccountBalance 	xmlns:java="java:id.co.ogya.ebanking.ejb.response">{$saldo}</java:AccountBalance>
+</m:response>
+</m:cekSaldoResponse>]]></con3:xqueryText>
+            </con2:expr>
+          </con2:assign>
+          <con2:replace varName="body" contents-only="true">
+            <con3:id>_ActionId-6435303334077033509-69788c5c.186e404c64f.-7ed4</con3:id>
+            <con2:location>
+              <con3:xpathText>.</con3:xpathText>
+            </con2:location>
+            <con2:expr>
+              <con3:xqueryText>$newBody</con3:xqueryText>
+            </con2:expr>
+          </con2:replace>
+          <con2:javaCallout varName="">
+            <con3:id>_ActionId-6435303334077033509-69788c5c.186e404c64f.-7ed1</con3:id>
+            <con2:archive ref="EjbExercise/Source/jar/SimpleLogging"/>
+            <con2:className>id.co.quadras.training.WriteToConsole</con2:className>
+            <con2:method>public static void println(java.lang.String, java.lang.String)</con2:method>
+            <con2:expr>
+              <con3:xqueryText>'DEBUG'</con3:xqueryText>
+            </con2:expr>
+            <con2:expr>
+              <con3:xqueryText>concat('Output Body : ',fn:normalize-space(fn-bea:serialize($body)))</con3:xqueryText>
+            </con2:expr>
+          </con2:javaCallout>
+          <con3:reply>
+            <con3:id>_ActionId-6435303334077033509-69788c5c.186e404c64f.-7eb2</con3:id>
+          </con3:reply>
+        </con1:actions>
+      </con1:stage>
+    </con1:pipeline>
+    <con1:pipeline type="request" name="PipelinePairNode2_request">
+      <con1:stage name="stage1">
+        <con1:context>
+          <con3:userNsDecl namespace="http://www.openuri.org/" prefix="m"/>
+          <con3:userNsDecl namespace="java:id.co.ogya.ebanking.ejb.response" prefix="java"/>
+        </con1:context>
+        <con1:actions>
+          <con2:wsCallout>
+            <con3:id>_ActionId-6435303334077033509-69788c5c.186e404c64f.-7f44</con3:id>
+            <con2:service xsi:type="ref:BusinessServiceRef" ref="EjbExercise/BusinessService/ebanking-ejb" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+            <con2:operation>kirim</con2:operation>
+            <con2:request>
+              <con2:body>$inputNo</con2:body>
+            </con2:request>
+            <con2:response>
+              <con2:body>outputNo</con2:body>
+            </con2:response>
+            <con2:requestTransform>
+              <con2:assign varName="inputNo">
+                <con3:id>_ActionId-6435303334077033509-69788c5c.186e404c64f.-7f23</con3:id>
+                <con2:expr>
+                  <con3:xqueryText>&lt;open:cekSaldo xmlns:open="http://www.openuri.org/">
+    &lt;!--Optional:-->
+    &lt;open:no>{$no}&lt;/open:no>
+&lt;/open:cekSaldo></con3:xqueryText>
+                </con2:expr>
+              </con2:assign>
+              <con2:javaCallout varName="">
+                <con3:id>_ActionId-6435303334077033509-69788c5c.186e404c64f.-7f20</con3:id>
+                <con2:archive ref="EjbExercise/Source/jar/SimpleLogging"/>
+                <con2:className>id.co.quadras.training.WriteToConsole</con2:className>
+                <con2:method>public static void println(java.lang.String, java.lang.String)</con2:method>
+                <con2:expr>
+                  <con3:xqueryText>'DEBUG'</con3:xqueryText>
+                </con2:expr>
+                <con2:expr>
+                  <con3:xqueryText>concat('Input no : ',fn:normalize-space(fn-bea:serialize($inputNo)))</con3:xqueryText>
+                </con2:expr>
+              </con2:javaCallout>
+            </con2:requestTransform>
+            <con2:responseTransform>
+              <con2:javaCallout varName="">
+                <con3:id>_ActionId-6435303334077033509-69788c5c.186e404c64f.-7f1d</con3:id>
+                <con2:archive ref="EjbExercise/Source/jar/SimpleLogging"/>
+                <con2:className>id.co.quadras.training.WriteToConsole</con2:className>
+                <con2:method>public static void println(java.lang.String, java.lang.String)</con2:method>
+                <con2:expr>
+                  <con3:xqueryText>'DEBUG'</con3:xqueryText>
+                </con2:expr>
+                <con2:expr>
+                  <con3:xqueryText>concat('output no : ',fn:normalize-space(fn-bea:serialize($outputNo)))</con3:xqueryText>
+                </con2:expr>
+              </con2:javaCallout>
+              <con2:assign varName="saldo">
+                <con3:id>_ActionId-6435303334077033509-69788c5c.186e404c64f.-7f1a</con3:id>
+                <con2:expr>
+                  <con3:xqueryText>$outputNo//m:response/java:AccountBalance/text()</con3:xqueryText>
+                </con2:expr>
+              </con2:assign>
+            </con2:responseTransform>
+          </con2:wsCallout>
+        </con1:actions>
+      </con1:stage>
+    </con1:pipeline>
+    <con1:pipeline type="response" name="PipelinePairNode2_response"/>
+    <con1:flow>
+      <con1:pipeline-node name="PipelinePairNode1">
+        <con1:request>PipelinePairNode1_request</con1:request>
+        <con1:response>PipelinePairNode1_response</con1:response>
+      </con1:pipeline-node>
+      <con1:pipeline-node name="PipelinePairNode2">
+        <con1:request>PipelinePairNode2_request</con1:request>
+        <con1:response>PipelinePairNode2_response</con1:response>
+      </con1:pipeline-node>
+    </con1:flow>
+  </ser:router>
+</xml-fragment>
