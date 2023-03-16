@@ -114,7 +114,7 @@ public class EbankingServiceImpl implements EbankingService {
 			preparedStatement.setLong(4, amount);
 			preparedStatement.setString(5, notes);
 			System.out.println("aman");
-			preparedStatement.executeQuery();
+			preparedStatement.executeUpdate();
 			preparedStatement.close();
 			dataSourceServiceFactory.closeConnection();
 		} catch (Exception e) {
@@ -171,7 +171,7 @@ public class EbankingServiceImpl implements EbankingService {
 			preparedStatement.setLong(1, jumlah);
 			preparedStatement.setLong(2, no);
 			System.out.println("update pengirim");
-			preparedStatement.executeQuery();
+			preparedStatement.executeUpdate();
 			preparedStatement.close();
 			dataSourceServiceFactory.closeConnection();
 		} catch (Exception e) {
@@ -188,7 +188,7 @@ public class EbankingServiceImpl implements EbankingService {
 			preparedStatement.setLong(1, jumlah);
 			preparedStatement.setLong(2, no);
 			System.out.println("update penerima");
-			preparedStatement.executeQuery();
+			preparedStatement.executeUpdate();
 			preparedStatement.close();
 			dataSourceServiceFactory.closeConnection();
 		} catch (Exception e) {
